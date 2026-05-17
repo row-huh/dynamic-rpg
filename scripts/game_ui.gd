@@ -7,9 +7,13 @@ extends CanvasLayer
 @onready var night_modal: Control = %NightModal
 @onready var talk_touch_btn: Button = %TalkTouchButton
 @onready var joystick_zone: Control = %JoystickZone
+@onready var daily_popup: Control = %DailyPopup
+@onready var popup_aspect: AspectRatioContainer = %PopupAspect
+@onready var popup_texture: TextureRect = %PopupTexture
 
 var _nearby_npc: NpcAgent = null
 var _player: CharacterBody2D = null
+var _last_seen_day: int = 0
 
 
 func _ready() -> void:
@@ -19,6 +23,9 @@ func _ready() -> void:
 	hud.visible = false
 	night_modal.visible = false
 	interact_prompt.visible = false
+	daily_popup.visible = false
+	if popup_texture.texture:
+		popup_aspect.ratio = float(popup_texture.texture.get_width()) / float(popup_texture.texture.get_height())
 	talk_touch_btn.pressed.connect(_on_touch_talk)
 	GameManager.state_changed.connect(_on_state_changed)
 	call_deferred("_bind_player")
@@ -59,6 +66,13 @@ func _on_state_changed() -> void:
 	end_screen.visible = GameManager.status == "won" or GameManager.status == "lost"
 	hud.visible = GameManager.status == "playing"
 	night_modal.visible = GameManager.pending_night and GameManager.status == "playing"
+
+	if GameManager.status == "intro":
+		_last_seen_day = 0
+
+	if GameManager.status == "playing" and not GameManager.pending_night and GameManager.day > _last_seen_day:
+		_last_seen_day = GameManager.day
+		daily_popup.visible = true
 
 	if end_screen.visible:
 		%EndTitle.text = "Victory" if GameManager.status == "won" else "Defeat"
@@ -114,3 +128,7 @@ func _on_restart_pressed() -> void:
 
 func _on_night_close_pressed() -> void:
 	GameManager.close_night()
+
+
+func _on_daily_close_pressed() -> void:
+	daily_popup.visible = false

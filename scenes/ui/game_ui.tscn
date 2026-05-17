@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/touch_controls.gd" id="4_touch"]
 [ext_resource type="PackedScene" path="res://scenes/ui/jrpg_dialogue_box.tscn" id="5_jrpg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/player_input_modal.tscn" id="6_input"]
+[ext_resource type="Texture2D" uid="uid://mecr2kxvs0wi" path="res://assets/splash/popup.png" id="7_splash"]
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -291,3 +292,50 @@ text = "Talk"
 [connection signal="pressed" from="IntroScreen/VBox/BeginButton" to="." method="_on_begin_pressed"]
 [connection signal="pressed" from="EndScreen/EndVBox/RestartButton" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="NightModal/NightVBox/NightCloseButton" to="." method="_on_night_close_pressed"]
+
+[node name="DailyPopup" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="MarginContainer" type="MarginContainer" parent="DailyPopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
+
+[node name="PopupAspect" type="AspectRatioContainer" parent="DailyPopup/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PopupTexture" type="TextureRect" parent="DailyPopup/MarginContainer/PopupAspect"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("7_splash")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DailyCloseButton" type="Button" parent="DailyPopup/MarginContainer/PopupAspect/PopupTexture"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+grow_horizontal = 0
+text = "X"
+
+[connection signal="pressed" from="DailyPopup/MarginContainer/PopupAspect/PopupTexture/DailyCloseButton" to="." method="_on_daily_close_pressed"]

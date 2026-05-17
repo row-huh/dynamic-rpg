@@ -3,8 +3,8 @@ extends Camera2D
 ## Child of the player — follows automatically. Offset centers on the sprite visual.
 
 @export var follow_offset: Vector2 = Vector2(8, -7)
-@export var desktop_zoom: Vector2 = Vector2(4, 4)
-@export var mobile_zoom: Vector2 = Vector2(3, 3)
+@export var desktop_zoom: Vector2 = Vector2(2, 2)
+@export var mobile_zoom: Vector2 = Vector2(2, 2)
 @export var smoothing_speed: float = 10.0
 
 
