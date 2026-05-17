@@ -191,6 +191,7 @@ func apply_delta(agent: String, d: Dictionary) -> void:
 		"trust_delta": d.get("trust_delta") if agent != "bishop" else null,
 		"fear_delta": d.get("fear_delta") if agent == "priest" else null,
 		"spilled": d.get("spill_dirt", []),
+		"mood": str(d.get("mood", "neutral")),
 	}
 	append_assistant_message(agent, str(d.get("reply", "...")), meta)
 

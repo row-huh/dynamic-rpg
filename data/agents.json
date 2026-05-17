@@ -4,6 +4,7 @@
     "title": "Army Commander",
     "emoji": "⚔️",
     "home": "Barracks",
+    "portrait_folder": "NPC_1",
     "color": "#b2362d",
     "accent": "#c7c7d6",
     "warning": "If his trust in you breaks, he will march straight to the Bishop."
@@ -13,6 +14,7 @@
     "title": "Citizen Representative",
     "emoji": "🌾",
     "home": "Market",
+    "portrait_folder": "NPC_3",
     "color": "#3b7a3b",
     "accent": "#d45632",
     "warning": "Lose her faith and she will whisper to the Bishop before nightfall."
@@ -22,6 +24,7 @@
     "title": "Palace Priest",
     "emoji": "🕯️",
     "home": "Chapel",
+    "portrait_folder": "NPC_2",
     "color": "#d8d8d8",
     "accent": "#d5a42d",
     "warning": "A nervous man with a loose tongue. Push too hard without leverage and he runs to the Bishop."
@@ -31,6 +34,7 @@
     "title": "The King's Bishop",
     "emoji": "✝️",
     "home": "Cathedral",
+    "portrait_folder": "NPC_4",
     "color": "#3152b8",
     "accent": "#e6e2d8",
     "warning": "He is the hunter. Every careless word becomes evidence. Speak only if you must."

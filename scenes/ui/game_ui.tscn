@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://courtgameui01"]
+[gd_scene load_steps=7 format=3 uid="uid://courtgameui01"]
 
 [ext_resource type="Script" path="res://scripts/game_ui.gd" id="1_ui"]
 [ext_resource type="Script" path="res://scripts/dialogue_controller.gd" id="2_dlg"]
 [ext_resource type="Script" path="res://scripts/game_hud.gd" id="3_hud"]
 [ext_resource type="Script" path="res://scripts/touch_controls.gd" id="4_touch"]
+[ext_resource type="PackedScene" path="res://scenes/ui/jrpg_dialogue_box.tscn" id="5_jrpg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/player_input_modal.tscn" id="6_input"]
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -187,66 +189,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("2_dlg")
 
-[node name="DialoguePanel" type="PanelContainer" parent="DialogueController"]
+[node name="JrpgDialogueBox" parent="DialogueController" instance=ExtResource("5_jrpg")]
 unique_name_in_owner = true
-visible = false
-anchors_preset = 12
-anchor_top = 1.0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -220.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 
-[node name="DlgMargin" type="MarginContainer" parent="DialogueController/DialoguePanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
-
-[node name="DlgVBox" type="VBoxContainer" parent="DialogueController/DialoguePanel/DlgMargin"]
-layout_mode = 2
-
-[node name="AgentTitle" type="Label" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox"]
+[node name="PlayerInputModal" parent="DialogueController" instance=ExtResource("6_input")]
 unique_name_in_owner = true
-layout_mode = 2
-text = "Agent"
-
-[node name="StatusLabel" type="Label" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "Day 1"
-
-[node name="History" type="RichTextLabel" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-bbcode_enabled = true
-scroll_following = true
-
-[node name="InputRow" type="HBoxContainer" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox"]
-layout_mode = 2
-
-[node name="MessageInput" type="LineEdit" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox/InputRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Whisper your words..."
-
-[node name="SendButton" type="Button" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox/InputRow"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Send"
-
-[node name="CloseButton" type="Button" parent="DialogueController/DialoguePanel/DlgMargin/DlgVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Leave conversation"
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="NightModal" type="PanelContainer" parent="."]
 unique_name_in_owner = true

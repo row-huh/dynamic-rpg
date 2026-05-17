@@ -1,0 +1,151 @@
+[gd_scene format=3 uid="uid://cwk4jlbrk2q4k"]
+
+[ext_resource type="Script" path="res://scripts/jrpg_dialogue_box.gd" id="1_box"]
+[ext_resource type="Script" path="res://scripts/typewriter_label.gd" id="2_tw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.08, 0.125, 0.88)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.91, 0.84, 0.72, 1)
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+
+[node name="JrpgDialogueBox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_box")
+
+[node name="DimOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.02, 0.01, 0.04, 0.25)
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -200.0
+offset_right = -8.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="PortraitStack" type="Control" parent="Root/HBox"]
+custom_minimum_size = Vector2(96, 120)
+layout_mode = 2
+
+[node name="PortraitBack" type="TextureRect" parent="Root/HBox/PortraitStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Portrait" type="TextureRect" parent="Root/HBox/PortraitStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextColumn" type="VBoxContainer" parent="Root/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="Nameplate" type="PanelContainer" parent="Root/HBox/TextColumn"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="NameLabel" type="Label" parent="Root/HBox/TextColumn/Nameplate"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.9, 1)
+theme_override_font_sizes/font_size = 14
+text = "Speaker"
+
+[node name="DialoguePanel" type="PanelContainer" parent="Root/HBox/TextColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="DialogueLabel" type="RichTextLabel" parent="Root/HBox/TextColumn/DialoguePanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.96, 0.94, 0.9, 1)
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+script = ExtResource("2_tw")
+
+[node name="Footer" type="HBoxContainer" parent="Root/HBox/TextColumn"]
+layout_mode = 2
+alignment = 2
+
+[node name="StatusLabel" type="Label" parent="Root/HBox/TextColumn/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.7, 0.55, 1)
+theme_override_font_sizes/font_size = 10
+text = "Day 1"
+
+[node name="ContinueButton" type="Button" parent="Root/HBox/TextColumn/Footer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Continue ▼"
+
+[node name="CloseButton" type="Button" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = -28.0
+offset_right = 84.0
+offset_bottom = -4.0
+theme_override_font_sizes/font_size = 10
+text = "Leave"
+
+[node name="BlipPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+volume_db = -18.0

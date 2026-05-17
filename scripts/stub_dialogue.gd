@@ -67,11 +67,24 @@ static func pick_opener(agent_id: String) -> String:
 	return lines[randi() % lines.size()]
 
 
+static func mood_for_opener(agent_id: String) -> String:
+	match agent_id:
+		"commander":
+			return "serious"
+		"citizen":
+			return "neutral"
+		"priest":
+			return "worried"
+		"bishop":
+			return "neutral"
+	return "neutral"
+
+
 static func generate_delta(agent_id: String, user_text: String, gm: Node) -> Dictionary:
 	var lower := user_text.to_lower()
 	var reply_pool: Array = REPLIES.get(agent_id, ["..."])
 	var reply: String = reply_pool[randi() % reply_pool.size()]
-	var delta := {"reply": reply}
+	var delta := {"reply": reply, "mood": "neutral"}
 
 	var trust_delta := 0
 	var fear_delta := 0
@@ -82,16 +95,21 @@ static func generate_delta(agent_id: String, user_text: String, gm: Node) -> Dic
 	if lower.contains("treason") or lower.contains("coup") or lower.contains("king"):
 		gossip_score = 10
 		trust_delta = -2
+		delta["mood"] = "serious"
 	if lower.contains("proof") or lower.contains("evidence") or lower.contains("ledger"):
 		trust_delta += 3
+		delta["mood"] = "serious"
 	if lower.contains("thank") or lower.contains("honor"):
 		trust_delta += 2
+		delta["mood"] = "happy"
 	if lower.contains("lie") or lower.contains("threat"):
 		trust_delta -= 4
+		delta["mood"] = "angry"
 
 	if agent_id == "priest":
 		if lower.contains("secret") or lower.contains("blackmail") or lower.contains("fear"):
 			fear_delta = 8
+			delta["mood"] = "worried"
 			reply = "You play a dangerous game. The vault... the seal was forged. I should not have said that."
 			if int(gm.agents["priest"]["fear"]) + fear_delta >= 40 and not gm.priest_spilled_dirt.has("bastard"):
 				delta["spill_dirt"] = ["bastard"]
@@ -117,8 +135,10 @@ static func generate_delta(agent_id: String, user_text: String, gm: Node) -> Dic
 		if gossip_score > 0 or lower.contains("heir") or lower.contains("false"):
 			proof_delta = 8
 			proof_evidence = "Player spoke of: " + user_text.substr(0, 80)
+			delta["mood"] = "serious"
 		if lower.contains("kill") and lower.contains("king"):
 			delta["inform_king"] = true
+			delta["mood"] = "shocked"
 			reply = "I must speak with His Majesty. Your game ends tonight."
 
 	if agent_id != "bishop" and trust_delta != 0:

@@ -1,125 +1,154 @@
 extends Control
 
-@onready var panel: PanelContainer = %DialoguePanel
-@onready var title_label: Label = %AgentTitle
-@onready var history: RichTextLabel = %History
-@onready var input: LineEdit = %MessageInput
-@onready var send_btn: Button = %SendButton
-@onready var close_btn: Button = %CloseButton
-@onready var status_label: Label = %StatusLabel
+enum State {
+	IDLE,
+	SHOWING_LINE,
+	AWAITING_CONTINUE,
+	AWAITING_INPUT,
+	WAITING_AI,
+}
+
+@onready var jrpg_box = %JrpgDialogueBox
+@onready var input_modal = %PlayerInputModal
+
+var _state: State = State.IDLE
+var _agent_id: String = ""
 
 
 func _ready() -> void:
 	add_to_group("dialogue_controller")
-	visible = false
-	panel.visible = false
-	send_btn.pressed.connect(_on_send)
-	close_btn.pressed.connect(_on_close)
-	input.text_submitted.connect(_on_text_submitted)
+	visible = true
+	jrpg_box.hide_box()
+	input_modal.close_modal()
+
+	jrpg_box.continue_pressed.connect(_on_continue_pressed)
+	jrpg_box.close_pressed.connect(_on_close)
+	input_modal.submitted.connect(_on_input_submitted)
+	input_modal.cancelled.connect(_on_input_cancelled)
+
+	jrpg_box.line_finished.connect(_on_line_finished)
+
 	GameManager.dialogue_requested.connect(_on_dialogue_open)
 	GameManager.dialogue_closed.connect(_on_dialogue_closed)
-	GameManager.state_changed.connect(_refresh)
+	GameManager.state_changed.connect(_on_state_changed)
 
 
 func _on_dialogue_open(agent_id: String) -> void:
-	visible = true
-	panel.visible = true
+	_agent_id = agent_id
+	_state = State.SHOWING_LINE
+	jrpg_box.show_box()
+
 	var meta: Dictionary = GameManager.agents_meta.get(agent_id, {})
-	title_label.text = "%s %s — %s" % [
-		meta.get("emoji", ""),
-		meta.get("name", agent_id),
-		meta.get("title", ""),
-	]
-	_refresh()
-	input.grab_focus()
-	await get_tree().process_frame
-	if GameManager.conversations[agent_id].is_empty() and not GameManager.use_http_ai:
-		var opener := StubDialogue.pick_opener(agent_id)
-		GameManager.append_assistant_message(agent_id, opener, {})
-		_refresh()
-	elif GameManager.conversations[agent_id].is_empty() and GameManager.use_http_ai:
-		status_label.text += " · AI linked"
-		_refresh()
+	var speaker: String = meta.get("name", agent_id)
+
+	if GameManager.conversations[agent_id].is_empty():
+		if GameManager.use_http_ai:
+			jrpg_box.show_line(agent_id, speaker, "...", "neutral")
+			_state = State.AWAITING_CONTINUE
+		else:
+			var opener := StubDialogue.pick_opener(agent_id)
+			var mood: String = StubDialogue.mood_for_opener(agent_id)
+			GameManager.append_assistant_message(agent_id, opener, {"mood": mood})
+			_show_assistant_line(agent_id, speaker, opener, mood)
+	else:
+		_show_last_assistant_line(agent_id, speaker)
 
 
-func _on_dialogue_closed() -> void:
-	visible = false
-	panel.visible = false
+func _show_last_assistant_line(agent_id: String, speaker: String) -> void:
+	var conv: Array = GameManager.conversations[agent_id]
+	for i in range(conv.size() - 1, -1, -1):
+		if conv[i].get("role") == "assistant":
+			var mood: String = str(conv[i].get("meta", {}).get("mood", "neutral"))
+			_show_assistant_line(agent_id, speaker, conv[i].get("content", ""), mood)
+			return
+	jrpg_box.show_line(agent_id, speaker, "...", "neutral")
+	_state = State.AWAITING_CONTINUE
 
 
-func _on_close() -> void:
-	GameManager.close_dialogue()
+func _show_assistant_line(agent_id: String, speaker: String, text: String, mood: String) -> void:
+	_state = State.SHOWING_LINE
+	jrpg_box.show_line(agent_id, speaker, text, mood, false)
 
 
-func _on_text_submitted(_text: String) -> void:
-	_on_send()
+func _on_line_finished() -> void:
+	if _state == State.SHOWING_LINE:
+		_state = State.AWAITING_CONTINUE
 
 
-func _on_send() -> void:
+func _on_continue_pressed() -> void:
+	if _state != State.AWAITING_CONTINUE:
+		return
+	if not GameManager.can_send_message():
+		_on_close()
+		return
+	_state = State.AWAITING_INPUT
+	input_modal.open_modal()
+
+
+func _on_input_submitted(text: String) -> void:
 	if not GameManager.can_send_message():
 		return
-	var text := input.text.strip_edges()
-	if text.is_empty():
-		return
-	input.text = ""
-	input.grab_focus()
-
 	GameManager.append_user_message(text)
+	_state = State.WAITING_AI
+	jrpg_box.show_thinking()
 
 	if GameManager.use_http_ai:
 		var http := get_node_or_null("/root/HttpAgentClient")
 		if http and http.has_method("request_agent"):
 			GameManager.request_pending = true
-			_refresh()
 			http.request_agent(GameManager.active_agent, text)
 			return
 
 	var delta := StubDialogue.generate_delta(GameManager.active_agent, text, GameManager)
-	GameManager.apply_delta(GameManager.active_agent, delta)
+	_on_agent_delta_ready(delta)
+
+
+func _on_input_cancelled() -> void:
+	if _state == State.WAITING_AI:
+		return
+	_state = State.AWAITING_CONTINUE
 
 
 func on_agent_response(delta: Dictionary) -> void:
 	GameManager.request_pending = false
-	GameManager.apply_delta(GameManager.active_agent, delta)
+	_on_agent_delta_ready(delta)
+
+
+func _on_agent_delta_ready(delta: Dictionary) -> void:
+	var mood: String = str(delta.get("mood", "neutral"))
+	var reply: String = str(delta.get("reply", "..."))
+	var agent_id := GameManager.active_agent
+	var speaker := GameManager.get_agent_name(agent_id)
+
+	# apply_delta appends assistant message; show line after
+	GameManager.apply_delta(agent_id, delta)
+	_show_assistant_line(agent_id, speaker, reply, mood)
 
 
 func on_agent_error(message: String) -> void:
 	GameManager.request_pending = false
-	GameManager.append_assistant_message(
-		GameManager.active_agent,
-		message if not message.is_empty() else "The voices fall silent. Try again.",
-		{}
-	)
-	_refresh()
-
-
-func _refresh() -> void:
-	if not panel.visible:
-		return
 	var agent_id := GameManager.active_agent
-	status_label.text = "Day %d · %d turns left" % [GameManager.day, GameManager.turns_left]
-	if GameManager.request_pending:
-		status_label.text += " · thinking..."
-	send_btn.disabled = not GameManager.can_send_message()
-	input.editable = GameManager.can_send_message()
+	var speaker := GameManager.get_agent_name(agent_id)
+	var err_text := message if not message.is_empty() else "The voices fall silent. Try again."
+	GameManager.append_assistant_message(agent_id, err_text, {"mood": "worried"})
+	_show_assistant_line(agent_id, speaker, err_text, "worried")
 
-	var bb := ""
-	for msg in GameManager.conversations[agent_id]:
-		var role: String = msg.get("role", "")
-		var content: String = msg.get("content", "")
-		if role == "user":
-			bb += "[color=#f1ca62]You:[/color] %s\n\n" % content
-		else:
-			bb += "[color=#c8b4e8]%s:[/color] %s\n\n" % [
-				GameManager.get_agent_name(agent_id),
-				content,
-			]
-			var meta: Dictionary = msg.get("meta", {})
-			if meta.get("trust_delta") != null:
-				bb += "[font_size=12][i]Trust %+.0f[/i][/font_size]\n" % float(meta["trust_delta"])
-			if meta.get("fear_delta") != null:
-				bb += "[font_size=12][i]Fear %+.0f[/i][/font_size]\n" % float(meta["fear_delta"])
-	history.text = bb
 
+func _on_close() -> void:
+	input_modal.close_modal()
+	jrpg_box.hide_box()
+	_state = State.IDLE
+	GameManager.close_dialogue()
+
+
+func _on_dialogue_closed() -> void:
+	input_modal.close_modal()
+	jrpg_box.hide_box()
+	_state = State.IDLE
+
+
+func _on_state_changed() -> void:
 	if GameManager.status != "playing":
 		_on_close()
+	elif GameManager.dialogue_open and jrpg_box.visible:
+		jrpg_box.status_label.text = "Day %d · %d turns" % [GameManager.day, GameManager.turns_left]

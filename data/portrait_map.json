@@ -1,0 +1,14 @@
+{
+  "moods": {
+    "neutral": { "stem": "Calm", "fallback": ["Talk", "Calm"] },
+    "happy": { "stem": "Smile", "fallback": ["Calm"] },
+    "angry": { "stem": "Aggression", "fallback": ["Calm"] },
+    "sad": { "stem": "Sadness", "fallback": ["Calm"] },
+    "serious": { "stem": "Talk", "fallback": ["Calm"] },
+    "shocked": { "stem": "Special", "fallback": ["Calm"] },
+    "smug": { "stem": "Smile", "fallback": ["Talk", "Calm"] },
+    "worried": { "stem": "Sadness", "fallback": ["Calm"] }
+  },
+  "default_mood": "neutral",
+  "default_stem": "Calm"
+}

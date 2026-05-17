@@ -219,6 +219,7 @@ func _fx_trust(fx: Dictionary) -> Dictionary:
 func _camel_to_delta(raw: Dictionary) -> Dictionary:
 	return {
 		"reply": raw.get("reply", "..."),
+		"mood": str(raw.get("mood", "neutral")),
 		"trust_delta": raw.get("trustDelta"),
 		"fear_delta": raw.get("fearDelta"),
 		"citizen_offer_blackmail": raw.get("citizenOfferBlackmail", false),
