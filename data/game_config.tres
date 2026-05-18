@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1")
-api_base_url = "http://127.0.0.1:5173"
+api_base_url = "http://127.0.0.1:8080"
 use_http_ai = true

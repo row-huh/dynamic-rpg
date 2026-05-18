@@ -3,7 +3,7 @@ extends Node
 signal agent_request_finished
 signal night_request_finished
 
-const DEFAULT_BASE_URL := "http://127.0.0.1:5173"
+const DEFAULT_BASE_URL := "http://127.0.0.1:8080"
 
 var base_url: String = DEFAULT_BASE_URL
 var use_http_ai: bool = true

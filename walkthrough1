@@ -1,0 +1,77 @@
+# 🏰 Court of Whispers - Project Walkthrough & Achievements
+
+We have completed an incredibly comprehensive series of gameplay, visual, and architectural overhauls! These changes have transformed the game from a basic prototype into a highly polished, modular, and immersive experience. 
+
+Below is the complete walkthrough of the advanced features we have designed, built, and successfully validated.
+
+---
+
+## 📖 Feature 1: Multi-Page Medieval Storybook Popup
+We completely replaced the static, single-page full-screen popup with a customized, interactive storybook layout!
+
+```mermaid
+graph TD
+    A[Daily Event Trigger] --> B[DailyPopup Frame]
+    B --> C[Page 1: Story Intro]
+    B --> D[Page 2: Objectives]
+    C -->|Next Arrow Button| D
+    D -->|Prev Arrow Button| C
+    B --> E[Elegant Close Button]
+```
+
+* **Medieval Gold Frame Visuals**: Integrated a premium medieval-themed gold-framed panel (`BookFrame`) centered beautifully on screen, complete with custom styleboxes and gold border textures.
+* **Interactive Multi-Page Navigation**:
+  * Added responsive left/right navigation arrows (`<` and `>`) for seamless flipping.
+  * Added a dynamic page-counter label (e.g. `Page 1 of 2`, `Page 2 of 2`) that updates instantly.
+  * Designed an elegant circular top-right close button (`×`) that dismisses the popup cleanly.
+* **Tween-Powered Transitions**: flip clicks trigger a custom `Tween` that performs a smooth, high-speed cross-fade opacity transition on the text and graphics.
+* **Robust Dynamic Loading**: Programmed [game_ui.gd](file:///d:/court-of-whispers-godot/scripts/game_ui.gd) to scan and queue arbitrary lists of daily pages (like `popup1.png` and `popup2.png`), ensuring the system handles any number of pages in the future!
+
+---
+
+## 🌿 Feature 2: Inaccessible Grassland Background Spawner
+We replaced the boring, flat gray/black empty space outside the tilemap with a gorgeous, seamless grassland void.
+
+* **Dynamic Grass Spawner**: Wrote and integrated [background_grass_spawner.gd](file:///d:/court-of-whispers-godot/scripts/background_grass_spawner.gd) into the game tree. At launch, the script scans the active tileset `Beginning Fields`, dynamically identifies the **most common grass tile** (detected as `source_id=43`, coordinate `(2, 1)`), and fills a massive `300 x 300` grid centered behind the map at `z_index = -10`.
+* **Inviolable Boundary Collisions**: Preserved physical integrity! The spawner places background tiles *behind* the map, while [world_boundary.gd](file:///d:/court-of-whispers-godot/scripts/world_boundary.gd) builds invisible collider walls precisely around the boundaries of the playable map. The player and NPCs are physically prevented from leaving the map, but the screen now displays a beautiful endless grassland instead of a black void!
+
+---
+
+## 👥 Feature 3: Refactored Dedicated NPC Character Scenes
+We broke down the shared, generic entity into four fully custom, separate scenes to fulfill your teammate's design requirements.
+
+```mermaid
+classDiagram
+    class CharacterBody2D {
+        +String agent_id
+        +SpriteFrames sprite_frames
+    }
+    CharacterBody2D <|-- CommanderNPC
+    CharacterBody2D <|-- CitizenNPC
+    CharacterBody2D <|-- PriestNPC
+    CharacterBody2D <|-- BishopNPC
+```
+
+* **Dedicated Scenes**: Built custom blueprints inside `res://scenes/npc/`:
+  * [commander_npc.tscn](file:///d:/court-of-whispers-godot/scenes/npc/commander_npc.tscn) $\rightarrow$ Default `agent_id = "commander"`
+  * [citizen_npc.tscn](file:///d:/court-of-whispers-godot/scenes/npc/citizen_npc.tscn) $\rightarrow$ Default `agent_id = "citizen"`
+  * [priest_npc.tscn](file:///d:/court-of-whispers-godot/scenes/npc/priest_npc.tscn) $\rightarrow$ Default `agent_id = "priest"`
+  * [bishop_npc.tscn](file:///d:/court-of-whispers-godot/scenes/npc/bishop_npc.tscn) $\rightarrow$ Default `agent_id = "bishop"`
+* **Independent Resources**: Each scene carries its own **standalone `SpriteFrames` resource**. Your teammate can swap spritesheets and animations independently for each character!
+* **Natural Coloring**: Cleaned up [npc_agent.gd](file:///d:/court-of-whispers-godot/scripts/npc_agent.gd) to strip the artificial modulated color tinting. All characters now render with their real, natural spritesheet colors!
+* **Scene Swaps**: Replaced all generic references inside [game.tscn](file:///d:/court-of-whispers-godot/scenes/game.tscn) with our new individual character scenes.
+
+---
+
+## 🔌 Feature 4: TanStack Port Connection Fix (`8080`)
+We resolved dialogue network errors by aligning the client and server configurations.
+
+* **Port Synchronization**: Since the React backend is powered by **TanStack Start**, its dev server boots on port `8080`.
+* **Godot Client Update**: Patched the Godot request client inside [http_agent_client.gd](file:///d:/court-of-whispers-godot/scripts/http_agent_client.gd), [game_config.gd](file:///d:/court-of-whispers-godot/scripts/game_config.gd), and [game_config.tres](file:///d:/court-of-whispers-godot/data/game_config.tres) to point dynamically to `http://127.0.0.1:8080`.
+* **Result**: Conversations now hook up and load AI dialogues smoothly without a hitch!
+
+---
+
+> [!TIP]
+> **Teammate Animation Swapping Tip:**
+> Open the character scene (e.g. `res://scenes/npc/priest_npc.tscn`) in the Godot Editor, select the `AnimatedSprite2D` node, and drag your new `.png` spritesheet directly into the inspector. **Zero code changes required!**

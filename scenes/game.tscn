@@ -2,12 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://dlrk0hkpq35vu" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://sm5iamctlmdr" path="res://assets/The Fan-tasy Tileset (Free) 1.5.7/The Fan-tasy Tileset (Free)/Tiled/Tilemaps/Beginning Fields.tmx" id="1_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://c8npcagent01" path="res://scenes/npc/npc_agent.tscn" id="4_npc"]
+[ext_resource type="PackedScene" uid="uid://c8npccommander" path="res://scenes/npc/commander_npc.tscn" id="11_commander"]
+[ext_resource type="PackedScene" uid="uid://c8npccitizen" path="res://scenes/npc/citizen_npc.tscn" id="12_citizen"]
+[ext_resource type="PackedScene" uid="uid://c8npcpriest" path="res://scenes/npc/priest_npc.tscn" id="13_priest"]
+[ext_resource type="PackedScene" uid="uid://c8npcbishop" path="res://scenes/npc/bishop_npc.tscn" id="14_bishop"]
 [ext_resource type="PackedScene" uid="uid://courtgameui01" path="res://scenes/ui/game_ui.tscn" id="5_ui"]
 [ext_resource type="Script" uid="uid://cvts20oeuym0n" path="res://scripts/navigation_setup.gd" id="6_nav"]
 [ext_resource type="Script" uid="uid://b5j3lqhfnwa68" path="res://scripts/prop_collision_spawner.gd" id="7_props"]
 [ext_resource type="Script" uid="uid://b68olgrmrrhof" path="res://scripts/player_interact_bridge.gd" id="8_bridge"]
 [ext_resource type="Script" path="res://scripts/world_boundary.gd" id="9_boundary"]
+[ext_resource type="Script" path="res://scripts/background_grass_spawner.gd" id="10_spawner"]
 
 [node name="Game" type="Node2D" unique_id=599054306]
 
@@ -24,20 +28,17 @@ region_rect = Rect2(-60, -60, 380, 380)
 
 [node name="Agents" type="Node2D" parent="." unique_id=1381096304]
 
-[node name="Commander" parent="Agents" unique_id=800360479 instance=ExtResource("4_npc")]
+[node name="Commander" parent="Agents" unique_id=800360479 instance=ExtResource("11_commander")]
 position = Vector2(240, 40)
 
-[node name="Citizen" parent="Agents" unique_id=727105932 instance=ExtResource("4_npc")]
+[node name="Citizen" parent="Agents" unique_id=727105932 instance=ExtResource("12_citizen")]
 position = Vector2(-40, 240)
-agent_id = "citizen"
 
-[node name="Priest" parent="Agents" unique_id=1658398775 instance=ExtResource("4_npc")]
+[node name="Priest" parent="Agents" unique_id=1658398775 instance=ExtResource("13_priest")]
 position = Vector2(-40, 40)
-agent_id = "priest"
 
-[node name="Bishop" parent="Agents" unique_id=1982258432 instance=ExtResource("4_npc")]
+[node name="Bishop" parent="Agents" unique_id=1982258432 instance=ExtResource("14_bishop")]
 position = Vector2(240, 240)
-agent_id = "bishop"
 
 [node name="player" parent="." unique_id=2112464386 instance=ExtResource("1_uwrxv")]
 position = Vector2(21, 21)
@@ -50,3 +51,8 @@ script = ExtResource("8_bridge")
 [node name="WorldBoundary" type="Node2D" parent="." unique_id=112233445]
 script = ExtResource("9_boundary")
 tilemap_path = NodePath("../Beginning Fields")
+
+[node name="BackgroundGrassSpawner" type="Node2D" parent="." unique_id=112233446]
+script = ExtResource("10_spawner")
+tilemap_path = NodePath("../Beginning Fields")
+

@@ -39,12 +39,8 @@ func _setup_navigation() -> void:
 
 
 func _apply_tint() -> void:
-	if not GameManager.agents_meta.has(agent_id):
-		return
-	var meta: Dictionary = GameManager.agents_meta[agent_id]
-	var col := Color.html(meta.get("color", "#ffffff"))
-	if sprite:
-		sprite.modulate = col
+	# Modulation is disabled since NPCs now use dedicated spritesheets
+	pass
 
 
 func _update_name_label() -> void:
