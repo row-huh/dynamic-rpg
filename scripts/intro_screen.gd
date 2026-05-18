@@ -18,7 +18,7 @@ func _ready() -> void:
 	video_player.finished.connect(_on_video_finished)
 	skip_button.pressed.connect(_on_skip_pressed)
 
-	music_player.stream = preload("res://assets/music/without_me_medieval.mp3")
+	music_player.stream = load("res://assets/music/without_me_medieval.mp3")
 
 	GameManager.state_changed.connect(_on_state_changed)
 
