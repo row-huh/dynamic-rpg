@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d04ioufvkk66e"
-path="res://.godot/imported/ArmyCommanderWalk.png-81458d3e0c648ce23ac572be54384a19.ctex"
+uid="uid://d4eivivit3im2"
+path="res://.godot/imported/ArmyCommanderWalk.png-36f13afc87fa4f8210e19d33e4f168b4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ArmyCommanderWalk.png"
-dest_files=["res://.godot/imported/ArmyCommanderWalk.png-81458d3e0c648ce23ac572be54384a19.ctex"]
+source_file="res://assets/agent_sprite/army_commander/ArmyCommanderWalk.png"
+dest_files=["res://.godot/imported/ArmyCommanderWalk.png-36f13afc87fa4f8210e19d33e4f168b4.ctex"]
 
 [params]
 

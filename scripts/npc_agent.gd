@@ -1,3 +1,5 @@
+# SpriteFrames on each NPC scene must define: idle_down/left/right/up,
+# walking_down/left/right/up (empty animations are allowed).
 class_name NpcAgent
 extends CharacterBody2D
 
@@ -23,7 +25,6 @@ func _ready() -> void:
 	home_position = global_position
 	collision_layer = PhysicsLayers.NPC
 	collision_mask = PhysicsLayers.WORLD | PhysicsLayers.PLAYER | PhysicsLayers.NPC
-	_apply_tint()
 	_update_name_label()
 	interactable.interacted.connect(_on_interacted)
 	GameManager.dialogue_requested.connect(_on_dialogue_requested)
@@ -36,11 +37,6 @@ func _setup_navigation() -> void:
 	await get_tree().physics_frame
 	if nav_agent:
 		nav_agent.target_position = global_position
-
-
-func _apply_tint() -> void:
-	# Modulation is disabled since NPCs now use dedicated spritesheets
-	pass
 
 
 func _update_name_label() -> void:
@@ -134,6 +130,8 @@ func _update_animation(direction: Vector2) -> void:
 	else:
 		anim = prefix + "_down"
 
+	if sprite.sprite_frames == null:
+		return
 	if sprite.sprite_frames.has_animation(anim) and sprite.animation != anim:
 		sprite.play(anim)
 

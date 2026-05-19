@@ -2,16 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://dlrk0hkpq35vu" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://sm5iamctlmdr" path="res://assets/The Fan-tasy Tileset (Free) 1.5.7/The Fan-tasy Tileset (Free)/Tiled/Tilemaps/Beginning Fields.tmx" id="1_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://c8npccommander" path="res://scenes/npc/commander_npc.tscn" id="11_commander"]
-[ext_resource type="PackedScene" uid="uid://c8npccitizen" path="res://scenes/npc/citizen_npc.tscn" id="12_citizen"]
-[ext_resource type="PackedScene" uid="uid://c8npcpriest" path="res://scenes/npc/priest_npc.tscn" id="13_priest"]
-[ext_resource type="PackedScene" uid="uid://c8npcbishop" path="res://scenes/npc/bishop_npc.tscn" id="14_bishop"]
 [ext_resource type="PackedScene" uid="uid://courtgameui01" path="res://scenes/ui/game_ui.tscn" id="5_ui"]
 [ext_resource type="Script" uid="uid://cvts20oeuym0n" path="res://scripts/navigation_setup.gd" id="6_nav"]
-[ext_resource type="Script" uid="uid://b5j3lqhfnwa68" path="res://scripts/prop_collision_spawner.gd" id="7_props"]
+[ext_resource type="Script" path="res://scripts/object_collision_spawner.gd" id="7_props"]
 [ext_resource type="Script" uid="uid://b68olgrmrrhof" path="res://scripts/player_interact_bridge.gd" id="8_bridge"]
-[ext_resource type="Script" path="res://scripts/world_boundary.gd" id="9_boundary"]
+[ext_resource type="Script" uid="uid://bgduwacrq052m" path="res://scripts/world_boundary.gd" id="9_boundary"]
 [ext_resource type="Script" path="res://scripts/background_grass_spawner.gd" id="10_spawner"]
+[ext_resource type="PackedScene" uid="uid://53oy7p2lelov" path="res://scenes/npc/commander_npc.tscn" id="11_commander"]
+[ext_resource type="PackedScene" uid="uid://c8npcciti0en" path="res://scenes/npc/citizen_npc.tscn" id="12_citizen"]
+[ext_resource type="PackedScene" uid="uid://c8npcpriest" path="res://scenes/npc/priest_npc.tscn" id="13_priest"]
+[ext_resource type="PackedScene" uid="uid://d0gpp7qul1hsb" path="res://scenes/npc/bishop_npc.tscn" id="14_bishop"]
 
 [node name="Game" type="Node2D" unique_id=599054306]
 
@@ -22,7 +22,7 @@ position = Vector2(-166, -155)
 script = ExtResource("7_props")
 map_root_path = NodePath("../Beginning Fields")
 
-[node name="NavigationRegion" type="NavigationRegion2D" parent="PropCollisions" unique_id=2074778100]
+[node name="NavigationRegion" type="NavigationRegion2D" parent="." unique_id=2074778100]
 script = ExtResource("6_nav")
 region_rect = Rect2(-60, -60, 380, 380)
 
@@ -41,7 +41,7 @@ position = Vector2(-40, 40)
 position = Vector2(240, 240)
 
 [node name="player" parent="." unique_id=2112464386 instance=ExtResource("1_uwrxv")]
-position = Vector2(21, 21)
+position = Vector2(109, 118)
 
 [node name="PlayerInteractBridge" type="Node" parent="player" unique_id=164981624]
 script = ExtResource("8_bridge")
@@ -49,10 +49,11 @@ script = ExtResource("8_bridge")
 [node name="GameUI" parent="." unique_id=604949701 instance=ExtResource("5_ui")]
 
 [node name="WorldBoundary" type="Node2D" parent="." unique_id=112233445]
+position = Vector2(-307, -6)
 script = ExtResource("9_boundary")
 tilemap_path = NodePath("../Beginning Fields")
 
 [node name="BackgroundGrassSpawner" type="Node2D" parent="." unique_id=112233446]
+position = Vector2(-211, 10)
 script = ExtResource("10_spawner")
 tilemap_path = NodePath("../Beginning Fields")
-
