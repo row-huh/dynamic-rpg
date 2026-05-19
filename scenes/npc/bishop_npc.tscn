@@ -9,4 +9,3 @@ agent_id = "bishop"
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=117819378]
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
-

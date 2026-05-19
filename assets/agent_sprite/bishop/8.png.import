@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ndg06t8yh176"
-path="res://.godot/imported/Priest_walk-resize.png-d2a22649d5cacf5e81df346335af1359.ctex"
+uid="uid://dj0c75k2jsc2h"
+path="res://.godot/imported/8.png-cb5a4feba6b36ed2d52425d68b4907e9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/agent_sprite/bishop/Priest_walk-resize.png"
-dest_files=["res://.godot/imported/Priest_walk-resize.png-d2a22649d5cacf5e81df346335af1359.ctex"]
+source_file="res://assets/agent_sprite/bishop/8.png"
+dest_files=["res://.godot/imported/8.png-cb5a4feba6b36ed2d52425d68b4907e9.ctex"]
 
 [params]
 

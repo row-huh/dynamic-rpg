@@ -3,12 +3,41 @@
 [ext_resource type="Script" uid="uid://bc8a2i66pb4wk" path="res://scripts/game_ui.gd" id="1_ui"]
 [ext_resource type="Script" uid="uid://b4hqu4kfaywua" path="res://scripts/dialogue_controller.gd" id="2_dlg"]
 [ext_resource type="Script" uid="uid://ci4eeuogx2max" path="res://scripts/game_hud.gd" id="3_hud"]
-[ext_resource type="Script" path="res://scripts/toast_manager.gd" id="3_toast"]
 [ext_resource type="Script" uid="uid://bgym0segijyec" path="res://scripts/touch_controls.gd" id="4_touch"]
 [ext_resource type="PackedScene" uid="uid://cwk4jlbrk2q4k" path="res://scenes/ui/jrpg_dialogue_box.tscn" id="5_jrpg"]
 [ext_resource type="PackedScene" uid="uid://dngqxruh16bee" path="res://scenes/ui/player_input_modal.tscn" id="6_input"]
 [ext_resource type="Script" uid="uid://c45pplv3hocnj" path="res://scripts/intro_screen.gd" id="8_intro"]
 [ext_resource type="VideoStream" uid="uid://dswb6sp1nhb7a" path="res://assets/videos/obra_letra.ogv" id="9_video"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drawer_bg"]
+bg_color = Color(0.12, 0.09, 0.08, 0.98)
+border_width_right = 2
+border_color = Color(0.2, 0.15, 0.12, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_hud_sep"]
+color = Color(0.91, 0.84, 0.72, 0.4)
+thickness = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
+bg_color = Color(0.18, 0.13, 0.11, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_trust_fg"]
+bg_color = Color(0.83, 0.65, 0.28, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fear_fg"]
+bg_color = Color(0.3, 0.1, 0.1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_book_frame"]
 content_margin_left = 20.0
@@ -88,36 +117,6 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_hud_sep"]
-color = Color(0.91, 0.84, 0.72, 0.4)
-thickness = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drawer_bg"]
-bg_color = Color(0.12, 0.09, 0.08, 0.98)
-border_width_right = 2
-border_color = Color(0.2, 0.15, 0.12, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
-bg_color = Color(0.18, 0.13, 0.11, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_trust_fg"]
-bg_color = Color(0.83, 0.65, 0.28, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fear_fg"]
-bg_color = Color(0.3, 0.1, 0.1, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
 [node name="GameUI" type="CanvasLayer" unique_id=201877592]
 script = ExtResource("1_ui")
 
@@ -149,7 +148,6 @@ offset_right = -16.0
 offset_bottom = 400.0
 grow_horizontal = 0
 mouse_filter = 2
-script = ExtResource("3_toast")
 
 [node name="IntroScreen" type="Control" parent="." unique_id=498121881]
 unique_name_in_owner = true
@@ -238,7 +236,6 @@ text = "Play Again"
 unique_name_in_owner = true
 visible = false
 offset_left = -350.0
-offset_top = 0.0
 offset_right = -30.0
 offset_bottom = 600.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_drawer_bg")
@@ -255,7 +252,7 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="HeaderHBox" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="HeaderHBox" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1002128389]
 layout_mode = 2
 theme_override_constants/separation = 12
 
@@ -275,26 +272,26 @@ theme_override_font_sizes/font_size = 14
 text = "Turns: 5"
 horizontal_alignment = 2
 
-[node name="HeaderSeparator" type="HSeparator" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="HeaderSeparator" type="HSeparator" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1629549295]
 layout_mode = 2
 theme_override_constants/separation = 12
 theme_override_styles/separator = SubResource("StyleBoxLine_hud_sep")
 
-[node name="AlaricTrustBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="AlaricTrustBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=925749103]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/AlaricTrustBox"]
+[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/AlaricTrustBox" unique_id=761468866]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/AlaricTrustBox/Header"]
+[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/AlaricTrustBox/Header" unique_id=1336472432]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "SIR ALARIC'S TRUST"
 
-[node name="CommanderTrustVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/AlaricTrustBox/Header"]
+[node name="CommanderTrustVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/AlaricTrustBox/Header" unique_id=153438700]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
@@ -311,21 +308,21 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_trust_fg")
 value = 30.0
 show_percentage = false
 
-[node name="MiraTrustBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="MiraTrustBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1038194872]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/MiraTrustBox"]
+[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/MiraTrustBox" unique_id=599823480]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/MiraTrustBox/Header"]
+[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/MiraTrustBox/Header" unique_id=177912774]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "MIRA'S TRUST"
 
-[node name="CitizenTrustVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/MiraTrustBox/Header"]
+[node name="CitizenTrustVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/MiraTrustBox/Header" unique_id=2128182118]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
@@ -342,21 +339,21 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_trust_fg")
 value = 30.0
 show_percentage = false
 
-[node name="PriestTrustBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="PriestTrustBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1839563081]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/PriestTrustBox"]
+[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/PriestTrustBox" unique_id=247836843]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestTrustBox/Header"]
+[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestTrustBox/Header" unique_id=623396653]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "FATHER EDRAN'S TRUST"
 
-[node name="PriestTrustVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestTrustBox/Header"]
+[node name="PriestTrustVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestTrustBox/Header" unique_id=106737848]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
@@ -373,21 +370,21 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_trust_fg")
 value = 30.0
 show_percentage = false
 
-[node name="PriestFearBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="PriestFearBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1049478882]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/PriestFearBox"]
+[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/PriestFearBox" unique_id=915358539]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestFearBox/Header"]
+[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestFearBox/Header" unique_id=1324441219]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "FATHER EDRAN'S FEAR OF YOU"
 
-[node name="PriestFearVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestFearBox/Header"]
+[node name="PriestFearVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/PriestFearBox/Header" unique_id=333919129]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
@@ -403,21 +400,21 @@ theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fear_fg")
 show_percentage = false
 
-[node name="ProofBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="ProofBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1412806953]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/ProofBox"]
+[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/ProofBox" unique_id=1165349487]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/ProofBox/Header"]
+[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/ProofBox/Header" unique_id=253262651]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "BISHOP'S PROOF AGAINST YOU"
 
-[node name="ProofVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/ProofBox/Header"]
+[node name="ProofVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/ProofBox/Header" unique_id=573448868]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
@@ -433,21 +430,21 @@ theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fear_fg")
 show_percentage = false
 
-[node name="SuspicionBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="SuspicionBox" type="VBoxContainer" parent="GameHUD/HUDMargin/HUDVBox" unique_id=1914319993]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/SuspicionBox"]
+[node name="Header" type="HBoxContainer" parent="GameHUD/HUDMargin/HUDVBox/SuspicionBox" unique_id=880478040]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/SuspicionBox/Header"]
+[node name="Label" type="Label" parent="GameHUD/HUDMargin/HUDVBox/SuspicionBox/Header" unique_id=119083238]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
 theme_override_font_sizes/font_size = 10
 text = "BISHOP'S SUSPICION"
 
-[node name="SuspicionVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/SuspicionBox/Header"]
+[node name="SuspicionVal" type="Label" parent="GameHUD/HUDMargin/HUDVBox/SuspicionBox/Header" unique_id=1885609669]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.48, 0.42, 1)
@@ -463,7 +460,7 @@ theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_fear_fg")
 show_percentage = false
 
-[node name="PathSeparator" type="HSeparator" parent="GameHUD/HUDMargin/HUDVBox"]
+[node name="PathSeparator" type="HSeparator" parent="GameHUD/HUDMargin/HUDVBox" unique_id=984816184]
 layout_mode = 2
 theme_override_constants/separation = 16
 theme_override_styles/separator = SubResource("StyleBoxLine_hud_sep")

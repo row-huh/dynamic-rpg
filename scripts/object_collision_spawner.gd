@@ -151,6 +151,17 @@ func _maybe_spawn_for_sprite(sprite: Sprite2D, index: Dictionary) -> void:
 	var path := tex.resource_path
 	var filename := path.get_file()
 
+	if "Purple" in filename and "Banner" not in filename:
+		print("[SPAWNER DEBUG] Purple house sprite: ", sprite.name)
+		print("  node_path: ", sprite.get_path())
+		print("  parent: ", sprite.get_parent().name if sprite.get_parent() else "null")
+		print("  position (local): ", sprite.position)
+		print("  global_position: ", sprite.global_position)
+		print("  region_enabled: ", sprite.region_enabled)
+		print("  offset: ", sprite.offset)
+		print("  scale: ", sprite.scale)
+		print("  in_index: ", index.has(path))
+
 	# Skip explicitly listed decorative textures
 	if filename in _skip_texture_filenames:
 		return
@@ -184,9 +195,16 @@ func _maybe_spawn_for_sprite(sprite: Sprite2D, index: Dictionary) -> void:
 		tile_coords = Vector2i(grid_x, grid_y)
 
 	var tiles: Dictionary = path_entry["tiles"]
+	if "Purple" in filename and "Banner" not in filename:
+		print("  tile_coords: ", tile_coords, "  tiles has it: ", tiles.has(tile_coords))
+		print("  tiles keys: ", tiles.keys())
 	if tiles.has(tile_coords):
 		var polygons: Array = tiles[tile_coords]
+		if "Purple" in filename and "Banner" not in filename:
+			print("  -> calling _spawn_polygon_body with ", polygons.size(), " polygons")
 		_spawn_polygon_body(sprite, polygons)
+		if "Purple" in filename and "Banner" not in filename:
+			print("  -> done. child ObjectCollision exists: ", sprite.get_node_or_null('ObjectCollision') != null)
 
 
 func _spawn_polygon_body(sprite: Sprite2D, polygons: Array) -> void:
@@ -194,6 +212,7 @@ func _spawn_polygon_body(sprite: Sprite2D, polygons: Array) -> void:
 	body.name = "ObjectCollision"
 	body.collision_layer = PhysicsLayers.WORLD
 	body.collision_mask = 0
+	body.position = sprite.offset
 	sprite.add_child(body)
 
 	for poly in polygons:

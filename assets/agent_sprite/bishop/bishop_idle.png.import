@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj88wp3s7shdb"
-path="res://.godot/imported/Priest_idle-resize.png-31ec645b1a745b2f4761a26f12386c92.ctex"
+uid="uid://bg86wi20rspqy"
+path="res://.godot/imported/bishop_idle.png-ed80ae9c26ad7397e26dbf772e258eac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/agent_sprite/bishop/Priest_idle-resize.png"
-dest_files=["res://.godot/imported/Priest_idle-resize.png-31ec645b1a745b2f4761a26f12386c92.ctex"]
+source_file="res://assets/agent_sprite/bishop/bishop_idle.png"
+dest_files=["res://.godot/imported/bishop_idle.png-ed80ae9c26ad7397e26dbf772e258eac.ctex"]
 
 [params]
 

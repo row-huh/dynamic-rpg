@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://caujsate2fulp"
-path="res://.godot/imported/walking.png-bf9baa906448e3e8890d4d6e11eab8e0.ctex"
+uid="uid://d1wk0il8xs1e1"
+path="res://.godot/imported/9.png-3dde6dcfb129d90a30d2730c9dfb58e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/agent_sprite/bishop/walking.png"
-dest_files=["res://.godot/imported/walking.png-bf9baa906448e3e8890d4d6e11eab8e0.ctex"]
+source_file="res://assets/agent_sprite/bishop/9.png"
+dest_files=["res://.godot/imported/9.png-3dde6dcfb129d90a30d2730c9dfb58e2.ctex"]
 
 [params]
 
