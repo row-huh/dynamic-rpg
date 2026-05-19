@@ -1,0 +1,64 @@
+# Walkthrough - Resolved Collisions & Custom NPC Wander Zones
+
+We have completed two major milestones in this session:
+1. **Resolved Collision Blockers**: Fixed the misalignment where players were blocked by empty spaces due to a double-offset calculation in the object spawner.
+2. **Restricted NPC Wander Zones**: Replaced random circular wandering with coordinate-based rectangular bounding boxes (`Rect2`), zoning all 4 agents in their designated map areas.
+3. **Stuck-Prevention System (State Machine Refactor & Timeout)**: Refactored the NPC agent state machine to avoid freezing when moving, and implemented a robust target-timeout mechanism to prevent agents from getting stuck when pathfinding near trees/colliders.
+
+---
+
+## Technical Details
+
+### 1. Collision Double-Offset Bug Fix
+* **File Modified**: [object_collision_spawner.gd](file:///d:\court-of-whispers-godot\scripts\object_collision_spawner.gd)
+* **Explanation**: The spawner was applying a `texture_origin` offset to collision polygons that were already defined in local tile coordinates. This double-applied offset shifted the physics boundaries far beyond their visual sprites (e.g., house walls blockades in open areas). We removed this redundant offset to align physics shapes perfectly with objects like `House_Hay_3`.
+
+### 2. Bounding Box Movement (`Rect2`) & Stuck Recovery Logic
+* **File Modified**: [npc_agent.gd](file:///d:\court-of-whispers-godot\scripts\npc_agent.gd)
+* **Wander Timeout & State Machine Fix**: Previously, the state machine was skipped completely while `not nav_agent.is_navigation_finished()` was true. If an NPC bumped into an obstacle (like a tree or table) inside their zone, they would get permanently stuck trying to reach a blocked point, never updating their state.
+* **The Solution**: 
+  1. We refactored `_physics_process()` so the state machine updates every single frame.
+  2. We introduced a `_wander_timeout` tracker (randomized between 5 to 8 seconds per wander path).
+  3. If they reach their target *or* if the timeout expires, they cleanly transition back to `IDLE` to rest before picking a fresh target.
+  4. We removed the strict `is_target_reachable()` check on candidates, which was getting blocked by navigation map synchronization delays on the very first frame of the game.
+  
+  ```gdscript
+  elif _state == BehaviorState.WANDER:
+      _wander_timeout -= delta
+      if wander_zone == Rect2() and global_position.distance_to(home_position) > wander_radius * 1.5:
+          _state = BehaviorState.RETURN_HOME
+          if nav_agent:
+              nav_agent.target_position = home_position
+      elif nav_agent == null or nav_agent.is_navigation_finished() or _wander_timeout <= 0.0:
+          _state = BehaviorState.IDLE
+          _wait_timer = randf_range(1.0, 3.0)
+          if nav_agent:
+              nav_agent.target_position = global_position
+  ```
+
+---
+
+## In-Game Zone Map Configurations
+
+We mapped and configured all 4 game agents inside `game.tscn`.
+
+| Agent | Visual Character | Wander Zone Bounding Box (`Rect2`) | Spawn Position |
+| :--- | :--- | :--- | :--- |
+| **Priest** | Father Edran | `Rect2(-162, -40, 167, 79)` | `Vector2(-78, 0)` |
+| **Commander** | Sir Alaric | `Rect2(337, 112, 77, 232)` | `Vector2(375, 228)` |
+| **Citizen** | Mira | `Rect2(300, 356, 115, 122)` | `Vector2(357, 417)` |
+| **Bishop** | Lord Edward | `Rect2(18, 159, 125, 116)` | `Vector2(80, 217)` |
+
+---
+
+## Verification
+
+### 1. Collision Verification
+* Walking around obstacles like the straw-roof houses, rock walls, and banners is smooth and blockages are gone.
+
+### 2. Wander Behavior Verification
+* Father Edran stays strictly confined within his rock-walled zone.
+* Sir Alaric walks vertically in his narrow right-hand path.
+* Mira stays within the bottom-right forest clearance.
+* Lord Edward patrols the town-square area near the benches and tables.
+* **All NPCs recover automatically** if they walk close to trees/benches and pick fresh, open paths!

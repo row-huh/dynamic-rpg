@@ -29,16 +29,20 @@ region_rect = Rect2(-60, -60, 380, 380)
 [node name="Agents" type="Node2D" parent="." unique_id=1381096304]
 
 [node name="Commander" parent="Agents" unique_id=800360479 instance=ExtResource("11_commander")]
-position = Vector2(240, 40)
+position = Vector2(375, 228)
+wander_zone = Rect2(337, 112, 77, 232)
 
 [node name="Citizen" parent="Agents" unique_id=727105932 instance=ExtResource("12_citizen")]
-position = Vector2(-40, 240)
+position = Vector2(371, 435)
+wander_zone = Rect2(326, 393, 91, 85)
 
 [node name="Priest" parent="Agents" unique_id=1658398775 instance=ExtResource("13_priest")]
-position = Vector2(-40, 40)
+position = Vector2(-78, 0)
+wander_zone = Rect2(-162, -40, 167, 79)
 
 [node name="Bishop" parent="Agents" unique_id=1982258432 instance=ExtResource("14_bishop")]
-position = Vector2(240, 240)
+position = Vector2(80, 217)
+wander_zone = Rect2(18, 159, 125, 116)
 
 [node name="player" parent="." unique_id=2112464386 instance=ExtResource("1_uwrxv")]
 position = Vector2(109, 118)

@@ -8,6 +8,21 @@ extends Node2D
 @export var fallback_enabled: bool = true
 @export var fallback_size_scale: Vector2 = Vector2(0.5, 0.35)
 
+## Maximum pixel size (both width AND height must be <=) to auto-skip
+## collision for tiny decorative ground detail sprites.
+@export var max_detail_size: int = 16
+
+## Texture filenames (basename only) to always skip collision for,
+## regardless of whether they have tileset-authored polygons.
+var _skip_texture_filenames: Array[String] = [
+	"Plant_2.png",
+	"Bush_Emerald_5.png",
+	"Bush_Emerald_6.png",
+	"Bush_Emerald_7.png",
+	"Rock_Brown_6.png",
+	"Rock_Brown_9.png",
+]
+
 var _spawned_count: int = 0
 var _polygon_count: int = 0
 var _fallback_count: int = 0
@@ -76,27 +91,34 @@ func _build_texture_collision_index(tile_set: TileSet) -> Dictionary:
 		if path.is_empty():
 			continue
 
-		if not atlas.has_tile(Vector2i(0, 0)):
-			continue
+		var path_entry = {
+			"tile_size": atlas.texture_region_size,
+			"margins": atlas.margins,
+			"separation": atlas.separation,
+			"tiles": {}
+		}
 
-		var td := atlas.get_tile_data(Vector2i(0, 0), 0)
-		if td == null:
-			continue
-
-		var polygons: Array = []
-		var poly_count := td.get_collision_polygons_count(physics_layer)
-		for poly_idx in range(poly_count):
-			var pts := td.get_collision_polygon_points(physics_layer, poly_idx)
-			if pts.size() < 3:
+		for tile_idx in range(atlas.get_tiles_count()):
+			var tile_coords := atlas.get_tile_id(tile_idx)
+			var td := atlas.get_tile_data(tile_coords, 0)
+			if td == null:
 				continue
-			var transformed := PackedVector2Array()
-			var origin := Vector2(td.texture_origin)
-			for p in pts:
-				transformed.append(p + origin)
-			polygons.append(transformed)
 
-		if not polygons.is_empty():
-			index[path] = polygons
+			var polygons: Array = []
+			var poly_count := td.get_collision_polygons_count(physics_layer)
+			for poly_idx in range(poly_count):
+				var pts := td.get_collision_polygon_points(physics_layer, poly_idx)
+				if pts.size() < 3:
+					continue
+				var transformed := PackedVector2Array()
+				for p in pts:
+					transformed.append(p)
+				polygons.append(transformed)
+
+			if not polygons.is_empty():
+				path_entry["tiles"][tile_coords] = polygons
+
+		index[path] = path_entry
 
 	return index
 
@@ -127,14 +149,44 @@ func _maybe_spawn_for_sprite(sprite: Sprite2D, index: Dictionary) -> void:
 		return
 
 	var path := tex.resource_path
-	var polygons: Array = index.get(path, [])
+	var filename := path.get_file()
 
-	if polygons.is_empty():
+	# Skip explicitly listed decorative textures
+	if filename in _skip_texture_filenames:
+		return
+
+	# Skip tiny non-atlas textures (ground detail decorations)
+	if not sprite.region_enabled:
+		var tex_size := tex.get_size()
+		if tex_size.x <= max_detail_size and tex_size.y <= max_detail_size:
+			return
+
+	if not index.has(path):
 		if fallback_enabled:
 			_spawn_fallback(sprite)
 		return
 
-	_spawn_polygon_body(sprite, polygons)
+	var path_entry: Dictionary = index[path]
+	var tile_coords := Vector2i(0, 0)
+
+	if sprite.region_enabled:
+		var region_pos := sprite.region_rect.position
+		var tile_size: Vector2i = path_entry["tile_size"]
+		var margins: Vector2i = path_entry["margins"]
+		var separation: Vector2i = path_entry["separation"]
+
+		var grid_x := 0
+		var grid_y := 0
+		if tile_size.x + separation.x > 0:
+			grid_x = int(round((region_pos.x - margins.x) / (tile_size.x + separation.x)))
+		if tile_size.y + separation.y > 0:
+			grid_y = int(round((region_pos.y - margins.y) / (tile_size.y + separation.y)))
+		tile_coords = Vector2i(grid_x, grid_y)
+
+	var tiles: Dictionary = path_entry["tiles"]
+	if tiles.has(tile_coords):
+		var polygons: Array = tiles[tile_coords]
+		_spawn_polygon_body(sprite, polygons)
 
 
 func _spawn_polygon_body(sprite: Sprite2D, polygons: Array) -> void:
@@ -157,7 +209,7 @@ func _spawn_polygon_body(sprite: Sprite2D, polygons: Array) -> void:
 
 func _spawn_fallback(sprite: Sprite2D) -> void:
 	var tex := sprite.texture
-	var size := tex.get_size() * sprite.scale
+	var size := sprite.region_rect.size * sprite.scale if sprite.region_enabled else tex.get_size() * sprite.scale
 	if size.x < 8.0 and size.y < 8.0:
 		return
 
@@ -180,3 +232,4 @@ func _spawn_fallback(sprite: Sprite2D) -> void:
 
 	_spawned_count += 1
 	_fallback_count += 1
+

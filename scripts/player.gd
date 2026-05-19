@@ -101,6 +101,23 @@ func _physics_process(_delta: float) -> void:
 	velocity = direction * speed
 	move_and_slide()
 
+	# --- DEBUG: log what the player is colliding with ---
+	if direction != Vector2.ZERO and get_slide_collision_count() > 0:
+		for i in range(get_slide_collision_count()):
+			var col := get_slide_collision(i)
+			var collider := col.get_collider()
+			if collider:
+				var parent_name := ""
+				if collider.get_parent():
+					parent_name = str(collider.get_parent().name)
+					if collider.get_parent().get_parent():
+						parent_name = str(collider.get_parent().get_parent().name) + "/" + parent_name
+				print("PLAYER BLOCKED at (%d,%d) by '%s' (parent: %s) at collider_pos=(%d,%d)" % [
+					int(global_position.x), int(global_position.y),
+					collider.name, parent_name,
+					int(collider.global_position.x), int(collider.global_position.y)])
+	# --- END DEBUG ---
+
 	if direction != Vector2.ZERO:
 		last_direction = direction
 

@@ -10,5 +10,3 @@ agent_id = "bishop"
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
 
-[node name="CollisionShape2D" parent="InteractArea" parent_id_path=PackedInt32Array(3700054) index="0" unique_id=1506105590]
-position = Vector2(5, -7)

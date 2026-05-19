@@ -1,0 +1,26 @@
+# Walkthrough - Resolved Empty Space Collisions
+
+We have successfully resolved the issue where players/NPCs collided with random empty spaces or invisible walls on roads and paths.
+
+## Changes Made
+
+### Map Collision System
+#### [object_collision_spawner.gd](file:///d:/court-of-whispers-godot/scripts/object_collision_spawner.gd)
+* **Indexed All Tiles**: Replaced the single-tile check at `Vector2i(0, 0)` with a complete scan of all tiles defined in each `TileSetAtlasSource`.
+* **Grid Coordinate Matching**: Updated lookup logic to match each sprite's `region_rect.position` to its corresponding grid coordinates in the atlas, taking margin and separation settings into account.
+* **Smart Fallback Handling**: 
+  - Calculated fallback sizes using `sprite.region_rect.size` if region texture is enabled, preventing massive collision boxes based on the full atlas texture sheets.
+  - Allowed walkable details (pebbles, flowers, shadows, grass tufts) to properly skip collision generation.
+
+---
+
+## Verification and Results
+
+### Godot Debug Execution
+We launched the project and verified the spawner's activity:
+```
+ObjectCollisionSpawner: 130 bodies (143 tile polygons, 0 fallbacks)
+```
+
+1. **Polygon Collision Accuracy**: Fences, houses, and trees now receive their exact, hand-drawn collision shapes from Tiled.
+2. **Removed Empty-Space Blocks**: Road details and walkable decorations no longer generate unwanted fallback collision shapes, resolving player movement blockages.

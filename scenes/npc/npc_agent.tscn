@@ -17,7 +17,7 @@ script = ExtResource("1_npc")
 position = Vector2(8, -7)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=171052063]
-position = Vector2(-2, -8)
+position = Vector2(8, -1)
 shape = SubResource("CapsuleShape2D_body")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1388037571]
@@ -29,6 +29,7 @@ radius = 6.0
 script = ExtResource("2_int")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1506105590]
+position = Vector2(8, -7)
 shape = SubResource("CircleShape2D_interact")
 
 [node name="NameLabel" type="Label" parent="." unique_id=374525623]

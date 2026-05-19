@@ -1,0 +1,73 @@
+# Walkthrough - Resolved Collisions & Custom NPC Wander Zones
+
+We have completed two major milestones in this session:
+1. **Resolved Collision Blockers**: Fixed the misalignment where players were blocked by empty spaces due to a double-offset calculation in the object spawner.
+2. **Restricted NPC Wander Zones**: Replaced random circular wandering with coordinate-based rectangular bounding boxes (`Rect2`), zoning all 4 agents in their designated map areas.
+3. **Stuck-Prevention System (State Machine Refactor, Timeout & Auto-Snapping)**: 
+   - Refactored the NPC agent state machine to avoid freezing when moving.
+   - Implemented a robust target-timeout mechanism and dynamic displacement-based stuck detection.
+   - **Auto-Snapping to Walkable Ground**: Programmed dynamic start snapping where NPCs query the navigation server to find the closest valid walkable coordinate on the navmesh and snap their spawn/home positions onto it. This completely prevents NPCs from starting stuck inside physical colliders (like trees or banners).
+
+---
+
+## Technical Details
+
+### 1. Collision Double-Offset Bug Fix
+* **File Modified**: [object_collision_spawner.gd](file:///d:\court-of-whispers-godot\scripts\object_collision_spawner.gd)
+* **Explanation**: The spawner was applying a `texture_origin` offset to collision polygons that were already defined in local tile coordinates. This double-applied offset shifted the physics boundaries far beyond their visual sprites. We removed this redundant offset.
+
+### 2. Auto-Snapping & Stuck Recovery Logic
+* **File Modified**: [npc_agent.gd](file:///d:\court-of-whispers-godot\scripts\npc_agent.gd)
+* **Dynamic Snapping on Startup**:
+  At startup, after letting the navigation server synchronize the map coordinates over two physics frames, the NPC queries the navigation server to find the closest walkable point on the navigation mesh and moves themselves there:
+  ```gdscript
+  func _setup_navigation() -> void:
+      await get_tree().physics_frame
+      await get_tree().physics_frame
+      if nav_agent:
+          var map := nav_agent.get_navigation_map()
+          var closest := NavigationServer2D.map_get_closest_point(map, global_position)
+          if closest != Vector2.ZERO:
+              global_position = closest
+              home_position = closest
+          nav_agent.target_position = global_position
+  ```
+* **Displacement Stuck Tracker**:
+  Tracks expected frame distance vs actual covered distance. If an NPC runs against a collider for `> 0.8 seconds`, it instantly triggers recovery:
+  ```gdscript
+  if distance_moved < expected_movement * 0.2:
+      _stuck_timer += delta
+      if _stuck_timer >= 0.8:
+          _state = BehaviorState.IDLE
+          _wait_timer = randf_range(0.5, 1.5)
+          _stuck_timer = 0.0
+          if nav_agent:
+              nav_agent.target_position = global_position
+  ```
+
+---
+
+## In-Game Zone Map Configurations
+
+We mapped and configured all 4 game agents inside `game.tscn`.
+
+| Agent | Visual Character | Wander Zone Bounding Box (`Rect2`) | Spawn Position |
+| :--- | :--- | :--- | :--- |
+| **Priest** | Father Edran | `Rect2(-162, -40, 167, 79)` | `Vector2(-78, 0)` |
+| **Commander** | Sir Alaric | `Rect2(337, 112, 77, 232)` | `Vector2(375, 228)` |
+| **Citizen** | Mira | `Rect2(352, 365, 59, 117)` | `Vector2(381, 423)` |
+| **Bishop** | Lord Edward | `Rect2(18, 159, 125, 116)` | `Vector2(80, 217)` |
+
+---
+
+## Verification
+
+### 1. Collision Verification
+* Walking around obstacles like the straw-roof houses, rock walls, and banners is smooth and blockages are gone.
+
+### 2. Wander Behavior Verification
+* Father Edran stays strictly confined within his rock-walled zone.
+* Sir Alaric walks vertically in his narrow right-hand path.
+* Mira stays within her forest clearance zone.
+* Lord Edward patrols the town-square area near the benches and tables.
+* **All NPCs snap to valid ground on startup** and recover automatically if they get blocked!
