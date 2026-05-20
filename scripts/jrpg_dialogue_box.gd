@@ -38,6 +38,32 @@ func _apply_theme() -> void:
 	continue_btn.add_theme_stylebox_override("normal", JrpgUiTheme.make_button_style())
 	close_btn.add_theme_stylebox_override("normal", JrpgUiTheme.make_button_style())
 
+	# Apply gorgeous, highly legible SystemFont with modern fallbacks
+	var sys_font := SystemFont.new()
+	sys_font.font_names = PackedStringArray(["Inter", "Roboto", "Segoe UI", "Arial", "sans-serif"])
+
+	name_label.add_theme_font_override("font", sys_font)
+	name_label.add_theme_font_size_override("font_size", 16)
+	name_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.45))
+	name_label.add_theme_constant_override("shadow_offset_y", 1)
+
+	dialogue_label.add_theme_font_override("normal_font", sys_font)
+	dialogue_label.add_theme_font_override("bold_font", sys_font)
+	dialogue_label.add_theme_font_size_override("normal_font_size", 16)
+	dialogue_label.add_theme_font_size_override("bold_font_size", 16)
+	dialogue_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.45))
+	dialogue_label.add_theme_constant_override("shadow_offset_y", 1)
+
+	status_label.add_theme_font_override("font", sys_font)
+	status_label.add_theme_font_size_override("font_size", 12)
+	status_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.4))
+	status_label.add_theme_constant_override("shadow_offset_y", 1)
+
+	continue_btn.add_theme_font_override("font", sys_font)
+	continue_btn.add_theme_font_size_override("font_size", 13)
+	close_btn.add_theme_font_override("font", sys_font)
+	close_btn.add_theme_font_size_override("font_size", 12)
+
 
 func _apply_mobile_layout() -> void:
 	var root: Control = get_node_or_null("Root") as Control
@@ -45,10 +71,10 @@ func _apply_mobile_layout() -> void:
 		return
 	var screen := get_viewport_rect().size
 	if screen.x < 900 or OS.has_feature("mobile"):
-		root.offset_top = -220.0
-		root.offset_bottom = -88.0
+		root.offset_top = -276.0
+		root.offset_bottom = -76.0
 	else:
-		root.offset_top = -200.0
+		root.offset_top = -256.0
 		root.offset_bottom = -72.0
 
 
