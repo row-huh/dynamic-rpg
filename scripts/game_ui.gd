@@ -39,6 +39,12 @@ func _ready() -> void:
 	interact_prompt.visible = false
 	daily_popup.visible = false
 
+	# Initialize and script dynamic ToastManager
+	var toast_script = load("res://scripts/toast_manager.gd")
+	if toast_script:
+		%ToastManager.set_script(toast_script)
+		%ToastManager._ready()
+
 	# Load popup textures dynamically
 	_popup_textures.append(load(POPUP1_PATH))
 	_popup_textures.append(load(POPUP2_PATH))

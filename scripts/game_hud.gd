@@ -26,6 +26,10 @@ var _is_polling: bool = false  # guard: don't stack requests
 var _base_url: String = "https://tanstack-start-app.court-of-whispers.workers.dev/"
 
 
+var _last_local_change_time: int = 0
+var _last_applied_updated_at: int = 0
+
+
 func _ready() -> void:
 	# Load base URL from game config
 	var cfg := load("res://data/game_config.tres") as GameConfig
@@ -45,7 +49,20 @@ func _ready() -> void:
 	add_child(_poll_timer)
 
 	GameManager.state_changed.connect(_refresh)
+	GameManager.dialogue_closed.connect(_on_local_change)
+	
+	var http := get_node_or_null("/root/HttpAgentClient")
+	if http:
+		if http.has_signal("agent_request_finished"):
+			http.agent_request_finished.connect(_on_local_change)
+		if http.has_signal("night_request_finished"):
+			http.night_request_finished.connect(_on_local_change)
+			
 	_refresh()
+
+
+func _on_local_change() -> void:
+	_last_local_change_time = Time.get_ticks_msec()
 
 
 func start_polling() -> void:
@@ -88,11 +105,18 @@ func _on_poll_completed(
 
 
 func _apply_server_state(s: Dictionary) -> void:
+	# Avoid race conditions: ignore background polls for 5 seconds after local updates
+	if Time.get_ticks_msec() - _last_local_change_time < 5000:
+		return
+
 	# Only update if server snapshot is newer than our last change
 	# (updatedAt 0 means server has never received a push — skip)
 	var updated_at: int = int(s.get("updatedAt", 0))
-	if updated_at == 0:
+	if updated_at == 0 or updated_at <= _last_applied_updated_at:
 		return
+
+	_last_applied_updated_at = updated_at
+
 
 	if s.has("day"):
 		GameManager.day = int(s["day"])
