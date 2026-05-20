@@ -24,7 +24,7 @@ PortraitLibrary="*res://scripts/portrait_library.gd"
 [display]
 
 window/stretch/mode="canvas_items"
-window/handheld/orientation=2
+window/handheld/orientation=1
 
 [editor]
 
@@ -85,4 +85,5 @@ move_down={
 
 textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
-textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
